@@ -3,7 +3,7 @@ import "./App.css";
 
 import Cell from "./components/Cell";
 
-const MAZE = [
+const MAZE: number[][] = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -19,12 +19,18 @@ const MAZE = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
+const DEFAULT_LOCATION: [number, number] = [-1, -1];
 function App() {
-  const [start, setStart] = useState<[number, number]>();
-  const [end, setEnd] = useState<[number, number]>();
+  const [start, setStart] = useState<[number, number]>(DEFAULT_LOCATION);
+  const [end, setEnd] = useState<[number, number]>(DEFAULT_LOCATION);
+
+  const clearState = () => {
+    setStart(DEFAULT_LOCATION);
+    setEnd(DEFAULT_LOCATION);
+  };
 
   const handleClick = (row: number, col: number) => {
-    if (!start) {
+    if (start === DEFAULT_LOCATION) {
       setStart([row, col]);
     } else {
       setEnd([row, col]);
@@ -49,6 +55,7 @@ function App() {
           </div>
         ))}
         <button>solve</button>
+        <button onClick={clearState}>clear</button>
       </div>
     </div>
   );
