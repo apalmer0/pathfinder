@@ -1,0 +1,15 @@
+.cell {
+  background-color: white;
+  border: 1px solid black;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.start {
+  background-color: green;
+}
+
+.end {
+  background-color: red;
+}
