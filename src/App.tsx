@@ -21,13 +21,15 @@ const MAZE: number[][] = [
 ];
 const DEFAULT_LOCATION: [number, number] = [-1, -1];
 
+const copyMaze = () => MAZE.map((row) => row.map((col) => col));
+
 function App() {
-  const [maze, setMaze] = useState(MAZE);
+  const [maze, setMaze] = useState(copyMaze());
   const [start, setStart] = useState<[number, number]>(DEFAULT_LOCATION);
   const [end, setEnd] = useState<[number, number]>(DEFAULT_LOCATION);
 
   const clearState = () => {
-    setMaze([...MAZE]);
+    setMaze(copyMaze());
     setStart(DEFAULT_LOCATION);
     setEnd(DEFAULT_LOCATION);
   };
@@ -75,8 +77,10 @@ function App() {
       if (rowIndex < 0 || rowIndex === MAZE.length) continue;
       if (colIndex < 0 || colIndex === MAZE[0].length) continue;
 
-      maze[rowIndex][colIndex] = 1;
-      setMaze([...maze]);
+      const newMaze = [...maze];
+      newMaze[rowIndex][colIndex] = 1;
+      setMaze(newMaze);
+
       await new Promise((r) => setTimeout(r, 25));
 
       const updatedPath: [number, number][] = [...path, [rowIndex, colIndex]];
@@ -99,8 +103,6 @@ function App() {
       if (!seen(rowIndex, colIndex - 1))
         q.push([rowIndex, colIndex - 1, updatedPath]);
     }
-
-    setMaze(maze);
   };
 
   return (
