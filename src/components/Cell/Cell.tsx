@@ -6,8 +6,9 @@ interface Props {
   handleClick: () => void;
   isEnd: boolean;
   isStart: boolean;
-  visited: boolean;
   partOfSolution: boolean;
+  visited: boolean;
+  wall: boolean;
 }
 
 const Cell: React.FC<Props> = ({
@@ -16,10 +17,13 @@ const Cell: React.FC<Props> = ({
   isStart,
   partOfSolution,
   visited,
+  wall,
 }) => {
   const className = `cell ${visited ? "visited" : ""} ${
     isStart ? "start" : ""
-  } ${isEnd ? "end" : ""} ${partOfSolution ? "solution" : ""}`;
+  } ${wall ? "wall" : ""} ${isEnd ? "end" : ""} ${
+    partOfSolution ? "solution" : ""
+  }`;
   return <div className={className} onClick={handleClick} />;
 };
 

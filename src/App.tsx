@@ -76,9 +76,10 @@ function App() {
 
       if (rowIndex < 0 || rowIndex === MAZE.length) continue;
       if (colIndex < 0 || colIndex === MAZE[0].length) continue;
+      if (maze[rowIndex][colIndex] === 1) continue;
 
       const newMaze = [...maze];
-      newMaze[rowIndex][colIndex] = 1;
+      newMaze[rowIndex][colIndex] = 2;
       setMaze(newMaze);
 
       await new Promise((r) => setTimeout(r, 25));
@@ -88,7 +89,7 @@ function App() {
       if (rowIndex === end[0] && colIndex === end[1]) {
         const newMaze = [...maze];
         path.forEach((cell) => {
-          newMaze[cell[0]][cell[1]] = 2;
+          newMaze[cell[0]][cell[1]] = 3;
         });
         setMaze(newMaze);
         break;
@@ -116,8 +117,9 @@ function App() {
                   start ? rowIndex === start[0] && colIndex === start[1] : false
                 }
                 isEnd={end ? rowIndex === end[0] && colIndex === end[1] : false}
-                visited={maze[rowIndex][colIndex] === 1}
-                partOfSolution={maze[rowIndex][colIndex] === 2}
+                wall={maze[rowIndex][colIndex] === 1}
+                visited={maze[rowIndex][colIndex] === 2}
+                partOfSolution={maze[rowIndex][colIndex] === 3}
                 key={colIndex}
                 handleClick={() => handleClick(rowIndex, colIndex)}
               />
