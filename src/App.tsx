@@ -122,6 +122,8 @@ function App() {
             ))}
           </div>
         ))}
+      </div>
+      <div className="buttons">
         <button onClick={solveMaze}>solve</button>
         <button onClick={clearState}>clear</button>
       </div>
