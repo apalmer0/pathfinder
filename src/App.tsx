@@ -50,6 +50,8 @@ function App() {
   };
 
   const handleClick = (row: number, col: number) => {
+    if (maze[row][col] !== 0) return;
+
     if (start === DEFAULT_LOCATION) {
       setStart([row, col]);
     } else {
@@ -57,10 +59,15 @@ function App() {
     }
   };
 
+  const isInvalid = (arr: [number, number]): boolean => {
+    return arr.some((ele) => ele === -1);
+  };
+
+  const invalid = isInvalid(start) || isInvalid(end);
+
   const solveMaze = async () => {
-    if (start === DEFAULT_LOCATION || end === DEFAULT_LOCATION) {
-      return;
-    }
+    if (invalid) return;
+
     const q: [number, number, [number, number][]][] = [[...start, []]];
 
     while (q.length > 0) {
@@ -124,8 +131,16 @@ function App() {
         ))}
       </div>
       <div className="buttons">
-        <button onClick={solveMaze}>solve</button>
-        <button onClick={clearState}>clear</button>
+        <button
+          disabled={invalid}
+          onClick={solveMaze}
+          className={`maze-button ${invalid ? "disabled" : ""}`}
+        >
+          solve
+        </button>
+        <button className="maze-button" onClick={clearState}>
+          clear
+        </button>
       </div>
     </div>
   );

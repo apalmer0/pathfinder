@@ -12,6 +12,7 @@
 
 .wall {
   background-color: #6e6e6e;
+  cursor: not-allowed;
 }
 
 .solution {
