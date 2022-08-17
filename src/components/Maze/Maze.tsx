@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
 
 import Cell from "../Cell";
 import { generateMaze, resetMaze, solveMaze } from "./utilities";
@@ -108,7 +109,7 @@ const Maze = () => {
           <button
             disabled={invalid}
             onClick={solve}
-            className={`maze-button ${invalid ? "disabled" : ""}`}
+            className={classNames("maze-button", { disabled: invalid })}
           >
             solve
           </button>
