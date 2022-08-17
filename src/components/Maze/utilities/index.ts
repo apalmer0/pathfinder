@@ -7,6 +7,8 @@ import {
 } from "../../../types";
 import SeenSet from "../../../SeenSet";
 
+const ANIMATION_DELAY = 25;
+
 const randBetween = (low: number, high: number): number => {
   const half = Math.floor(high / 2) - 2;
   const random = Math.floor(Math.random() * (half - low + 1) + low);
@@ -212,16 +214,19 @@ export const solveMaze = async (
     newMaze[row][col] = 2;
     setMaze(newMaze);
 
-    await new Promise((r) => setTimeout(r, 25));
+    await new Promise((r) => setTimeout(r, ANIMATION_DELAY));
 
     const updatedPath: Path = [...path, [row, col]];
 
     if (row === end[0] && col === end[1]) {
-      const newMaze = [...maze];
-      path.forEach((cell) => {
-        newMaze[cell[0]][cell[1]] = 3;
-      });
-      setMaze(newMaze);
+      for (let i = 0; i < updatedPath.length; i++) {
+        const [row, col] = updatedPath[i];
+        const newMaze = [...maze];
+        newMaze[row][col] = CellTypes.SOLUTION;
+        setMaze(newMaze);
+        await new Promise((r) => setTimeout(r, ANIMATION_DELAY));
+      }
+
       break;
     }
 
