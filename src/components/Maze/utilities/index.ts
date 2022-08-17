@@ -134,7 +134,7 @@ const aldousBroder = (mazeSize: number): MazeType => {
       continue;
     }
 
-    for (neighbor in neighbors) {
+    for (const neighbor of neighbors) {
       const [neighborRow, neighborCol] = neighbor;
 
       if (maze[neighborRow][neighborCol] > 0) {
@@ -148,7 +148,7 @@ const aldousBroder = (mazeSize: number): MazeType => {
         maze[neighborRow][neighborCol] = 0;
 
         // bump the number visited
-        num_visited += 1;
+        numVisited += 1;
 
         // current becomes new neighbor
         currRow = neighborRow;
