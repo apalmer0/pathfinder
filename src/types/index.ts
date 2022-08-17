@@ -14,5 +14,3 @@ export enum CellTypes {
 export enum GenerationAlgorithm {
   BACKTRACKING,
 }
-
-export type SeenSet = { [row: number]: Set<number> };

@@ -4,8 +4,8 @@ import {
   MazeType,
   Path,
   Position,
-  SeenSet,
 } from "../../../types";
+import SeenSet from "../../../SeenSet";
 
 const randBetween = (low: number, high: number): number => {
   const half = Math.floor(high / 2) - 2;
@@ -114,38 +114,21 @@ export const generateMaze = (
   }
 };
 
-const seen = (row: number, col: number, fakeSet: SeenSet) => {
-  if (row in fakeSet && fakeSet[row].has(col)) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-const add = (row: number, col: number, fakeSet: SeenSet) => {
-  if (row in fakeSet) {
-    fakeSet[row].add(col);
-  } else {
-    fakeSet[row] = new Set();
-    fakeSet[row].add(col);
-  }
-};
-
 export const solveMaze = async (
   start: Position,
   end: Position,
   maze: MazeType,
   setMaze: (maze: MazeType) => void
 ) => {
-  const fakeSet: { [row: number]: Set<number> } = {};
+  const seenSet = new SeenSet();
   const q: [number, number, Path][] = [[...start, []]];
 
   while (q.length > 0) {
     const [row, col, path] = q[0];
     q.shift();
 
-    if (seen(row, col, fakeSet)) continue;
-    add(row, col, fakeSet);
+    if (seenSet.has(row, col)) continue;
+    seenSet.add(row, col);
 
     if (row < 0 || row === maze.length) continue;
     if (col < 0 || col === maze[0].length) continue;
@@ -168,9 +151,9 @@ export const solveMaze = async (
       break;
     }
 
-    if (!seen(row + 1, col, fakeSet)) q.push([row + 1, col, updatedPath]);
-    if (!seen(row - 1, col, fakeSet)) q.push([row - 1, col, updatedPath]);
-    if (!seen(row, col + 1, fakeSet)) q.push([row, col + 1, updatedPath]);
-    if (!seen(row, col - 1, fakeSet)) q.push([row, col - 1, updatedPath]);
+    if (!seenSet.has(row + 1, col)) q.push([row + 1, col, updatedPath]);
+    if (!seenSet.has(row - 1, col)) q.push([row - 1, col, updatedPath]);
+    if (!seenSet.has(row, col + 1)) q.push([row, col + 1, updatedPath]);
+    if (!seenSet.has(row, col - 1)) q.push([row, col - 1, updatedPath]);
   }
 };
