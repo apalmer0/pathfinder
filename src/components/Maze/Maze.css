@@ -1,0 +1,26 @@
+.maze-container {
+  border: 1px solid white;
+  padding: 15px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.maze-button {
+  background-color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 10px 20px;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
