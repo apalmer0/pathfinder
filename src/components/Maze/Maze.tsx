@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import Cell from "../Cell";
-import { generateMaze, solveMaze } from "./utilities";
+import { generateMaze, resetMaze, solveMaze } from "./utilities";
 import { GenerationAlgorithm, MazeType, Position } from "../../types";
 import "./Maze.css";
 
@@ -18,21 +18,27 @@ const Maze = () => {
     GenerationAlgorithm.BACKTRACKING
   );
 
-  const updateMaze = useCallback(() => {
+  const createMaze = useCallback(() => {
     const newMaze = generateMaze(mazeSize, generationAlgorithm);
 
     setMaze(newMaze);
   }, [generationAlgorithm, mazeSize]);
 
   const resetState = useCallback(() => {
-    updateMaze();
+    resetMaze(maze);
     setStart(DEFAULT_LOCATION);
     setEnd(DEFAULT_LOCATION);
-  }, [updateMaze]);
+  }, [maze]);
+
+  const startOver = useCallback(() => {
+    createMaze();
+    setStart(DEFAULT_LOCATION);
+    setEnd(DEFAULT_LOCATION);
+  }, [createMaze]);
 
   useEffect(() => {
-    resetState();
-  }, [mazeSize, resetState]);
+    startOver();
+  }, [mazeSize, startOver]);
 
   const handleMazeSizeChange = (size: string) => {
     let newSize = Number(size);
@@ -105,6 +111,9 @@ const Maze = () => {
           </button>
           <button className="maze-button" onClick={resetState}>
             reset
+          </button>
+          <button className="maze-button" onClick={startOver}>
+            start over
           </button>
         </div>
         <div>

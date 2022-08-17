@@ -161,6 +161,19 @@ const aldousBroder = (mazeSize: number): MazeType => {
   return maze;
 };
 
+export const resetMaze = (maze: MazeType): MazeType => {
+  for (let i = 0; i < maze.length; i++) {
+    for (let j = 0; j < maze[0].length; j++) {
+      const touched = [CellTypes.VISITED, CellTypes.SOLUTION];
+      if (touched.includes(maze[i][j])) {
+        maze[i][j] = CellTypes.SPACE;
+      }
+    }
+  }
+
+  return maze;
+};
+
 export const generateMaze = (
   mazeSize: number,
   algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
