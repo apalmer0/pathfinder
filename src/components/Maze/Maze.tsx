@@ -71,25 +71,25 @@ const Maze = () => {
     const q: [number, number, [number, number][]][] = [[...start, []]];
 
     while (q.length > 0) {
-      const [rowIndex, colIndex, path] = q[0];
+      const [row, col, path] = q[0];
       q.shift();
 
-      if (seen(rowIndex, colIndex)) continue;
-      add(rowIndex, colIndex);
+      if (seen(row, col)) continue;
+      add(row, col);
 
-      if (rowIndex < 0 || rowIndex === MAZE.length) continue;
-      if (colIndex < 0 || colIndex === MAZE[0].length) continue;
-      if (maze[rowIndex][colIndex] === 1) continue;
+      if (row < 0 || row === MAZE.length) continue;
+      if (col < 0 || col === MAZE[0].length) continue;
+      if (maze[row][col] === 1) continue;
 
       const newMaze = [...maze];
-      newMaze[rowIndex][colIndex] = 2;
+      newMaze[row][col] = 2;
       setMaze(newMaze);
 
       await new Promise((r) => setTimeout(r, 25));
 
-      const updatedPath: [number, number][] = [...path, [rowIndex, colIndex]];
+      const updatedPath: [number, number][] = [...path, [row, col]];
 
-      if (rowIndex === end[0] && colIndex === end[1]) {
+      if (row === end[0] && col === end[1]) {
         const newMaze = [...maze];
         path.forEach((cell) => {
           newMaze[cell[0]][cell[1]] = 3;
@@ -98,14 +98,10 @@ const Maze = () => {
         break;
       }
 
-      if (!seen(rowIndex + 1, colIndex))
-        q.push([rowIndex + 1, colIndex, updatedPath]);
-      if (!seen(rowIndex - 1, colIndex))
-        q.push([rowIndex - 1, colIndex, updatedPath]);
-      if (!seen(rowIndex, colIndex + 1))
-        q.push([rowIndex, colIndex + 1, updatedPath]);
-      if (!seen(rowIndex, colIndex - 1))
-        q.push([rowIndex, colIndex - 1, updatedPath]);
+      if (!seen(row + 1, col)) q.push([row + 1, col, updatedPath]);
+      if (!seen(row - 1, col)) q.push([row - 1, col, updatedPath]);
+      if (!seen(row, col + 1)) q.push([row, col + 1, updatedPath]);
+      if (!seen(row, col - 1)) q.push([row, col - 1, updatedPath]);
     }
   };
 
@@ -116,13 +112,9 @@ const Maze = () => {
           <div className="row" key={rowIndex}>
             {row.map((_, colIndex) => (
               <Cell
-                isStart={
-                  start ? rowIndex === start[0] && colIndex === start[1] : false
-                }
-                isEnd={end ? rowIndex === end[0] && colIndex === end[1] : false}
-                wall={maze[rowIndex][colIndex] === 1}
-                visited={maze[rowIndex][colIndex] === 2}
-                partOfSolution={maze[rowIndex][colIndex] === 3}
+                isStart={rowIndex === start[0] && colIndex === start[1]}
+                isEnd={rowIndex === end[0] && colIndex === end[1]}
+                cellType={maze[rowIndex][colIndex]}
                 key={colIndex}
                 handleClick={() => handleClick(rowIndex, colIndex)}
               />
