@@ -15,7 +15,7 @@ export const generateMaze = (mazeSize: number): MazeType => {
   return newMaze;
 };
 
-const fakeSet: any = {};
+const fakeSet: { [row: number]: Set<number> } = {};
 
 const seen = (row: number, col: number) => {
   if (row in fakeSet && fakeSet[row].has(col)) {
