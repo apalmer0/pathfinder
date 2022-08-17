@@ -12,7 +12,6 @@ export enum CellTypes {
 }
 
 export enum GenerationAlgorithm {
-  RANDOM,
   BACKTRACKING,
 }
 

@@ -32,10 +32,7 @@ const shuffle = <T>(arr: T[]): T[] => {
   return arr;
 };
 
-const createBaseMaze = (
-  mazeSize: number,
-  fill: CellTypes = Math.round(Math.random())
-): MazeType => {
+const createBaseMaze = (mazeSize: number, fill: CellTypes): MazeType => {
   const maze: MazeType = [];
 
   for (let i = 0; i < mazeSize; i++) {
@@ -71,12 +68,6 @@ const findNeighbors = (row: number, col: number, maze: MazeType): Path => {
   }
 
   return shuffle<Position>(neighbors);
-};
-
-const random = (mazeSize: number): MazeType => {
-  const maze = createBaseMaze(mazeSize);
-
-  return maze;
 };
 
 const backtrack = (mazeSize: number): MazeType => {
@@ -116,12 +107,10 @@ export const generateMaze = (
   algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
 ): MazeType => {
   switch (algorithm) {
-    case GenerationAlgorithm.RANDOM:
-      return random(mazeSize);
     case GenerationAlgorithm.BACKTRACKING:
       return backtrack(mazeSize);
     default:
-      return random(mazeSize);
+      return backtrack(mazeSize);
   }
 };
 
