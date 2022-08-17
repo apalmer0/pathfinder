@@ -10,3 +10,10 @@ export enum CellTypes {
   VISITED = 2,
   SOLUTION = 3,
 }
+
+export enum GenerationAlgorithm {
+  RANDOM,
+  BACKTRACKING,
+}
+
+export type SeenSet = { [row: number]: Set<number> };

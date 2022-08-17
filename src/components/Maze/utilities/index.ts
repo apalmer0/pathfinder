@@ -1,23 +1,131 @@
-import { MazeType, Path, Position } from "../../../types";
+import {
+  CellTypes,
+  GenerationAlgorithm,
+  MazeType,
+  Path,
+  Position,
+  SeenSet,
+} from "../../../types";
 
-export const generateMaze = (mazeSize: number): MazeType => {
-  const newMaze: number[][] = [];
+const randBetween = (low: number, high: number): number => {
+  const half = Math.floor(high / 2) - 2;
+  const random = Math.floor(Math.random() * (half - low + 1) + low);
+  const double = random * 2;
+
+  // always return an odd number to ensure we have a border around maze
+  return double + 1;
+};
+
+const shuffle = <T>(arr: T[]): T[] => {
+  let currentIndex = arr.length;
+  let randomIndex = Math.floor(Math.random() * currentIndex);
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    const tmp = arr[currentIndex];
+    arr[currentIndex] = arr[randomIndex];
+    arr[randomIndex] = tmp;
+  }
+
+  return arr;
+};
+
+const createBaseMaze = (
+  mazeSize: number,
+  fill: CellTypes = Math.round(Math.random())
+): MazeType => {
+  const maze: MazeType = [];
+
   for (let i = 0; i < mazeSize; i++) {
     const newRow = [];
 
     for (let j = 0; j < mazeSize; j++) {
-      newRow.push(Math.round(Math.random()));
+      newRow.push(fill);
     }
 
-    newMaze.push(newRow);
+    maze.push(newRow);
   }
 
-  return newMaze;
+  return maze;
 };
 
-const fakeSet: { [row: number]: Set<number> } = {};
+const findNeighbors = (row: number, col: number, maze: MazeType): Path => {
+  const neighbors: Path = [];
 
-const seen = (row: number, col: number) => {
+  if (row > 1 && maze[row - 2][col] === CellTypes.WALL) {
+    neighbors.push([row - 2, col]);
+  }
+
+  if (row < maze.length - 2 && maze[row + 2][col] === CellTypes.WALL) {
+    neighbors.push([row + 2, col]);
+  }
+
+  if (col > 1 && maze[row][col - 2] === CellTypes.WALL) {
+    neighbors.push([row, col - 2]);
+  }
+
+  if (col < maze[0].length - 2 && maze[row][col + 2] === CellTypes.WALL) {
+    neighbors.push([row, col + 2]);
+  }
+
+  return shuffle<Position>(neighbors);
+};
+
+const random = (mazeSize: number): MazeType => {
+  const maze = createBaseMaze(mazeSize);
+
+  return maze;
+};
+
+const backtrack = (mazeSize: number): MazeType => {
+  const maze = createBaseMaze(mazeSize, CellTypes.WALL);
+
+  const row = randBetween(1, mazeSize - 1);
+  const col = randBetween(1, mazeSize - 1);
+  let path: Path = [[row, col]];
+
+  maze[row][col] = CellTypes.SPACE;
+
+  while (path.length > 0) {
+    const [currRow, currCol] = path[path.length - 1];
+    const neighbors = findNeighbors(currRow, currCol, maze);
+
+    if (neighbors.length === 0) {
+      path = path.slice(0, path.length - 1);
+    } else {
+      const [neighborRow, neighborCol] = neighbors[0];
+
+      maze[neighborRow][neighborCol] = CellTypes.SPACE;
+
+      const newRow = Math.floor((neighborRow + currRow) / 2);
+      const newCol = Math.floor((neighborCol + currCol) / 2);
+
+      maze[newRow][newCol] = CellTypes.SPACE;
+
+      path.push([neighborRow, neighborCol]);
+    }
+  }
+
+  return maze;
+};
+
+export const generateMaze = (
+  mazeSize: number,
+  algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
+): MazeType => {
+  switch (algorithm) {
+    case GenerationAlgorithm.RANDOM:
+      return random(mazeSize);
+    case GenerationAlgorithm.BACKTRACKING:
+      return backtrack(mazeSize);
+    default:
+      return random(mazeSize);
+  }
+};
+
+const seen = (row: number, col: number, fakeSet: SeenSet) => {
   if (row in fakeSet && fakeSet[row].has(col)) {
     return true;
   } else {
@@ -25,7 +133,7 @@ const seen = (row: number, col: number) => {
   }
 };
 
-const add = (row: number, col: number) => {
+const add = (row: number, col: number, fakeSet: SeenSet) => {
   if (row in fakeSet) {
     fakeSet[row].add(col);
   } else {
@@ -40,14 +148,15 @@ export const solveMaze = async (
   maze: MazeType,
   setMaze: (maze: MazeType) => void
 ) => {
+  const fakeSet: { [row: number]: Set<number> } = {};
   const q: [number, number, Path][] = [[...start, []]];
 
   while (q.length > 0) {
     const [row, col, path] = q[0];
     q.shift();
 
-    if (seen(row, col)) continue;
-    add(row, col);
+    if (seen(row, col, fakeSet)) continue;
+    add(row, col, fakeSet);
 
     if (row < 0 || row === maze.length) continue;
     if (col < 0 || col === maze[0].length) continue;
@@ -70,9 +179,9 @@ export const solveMaze = async (
       break;
     }
 
-    if (!seen(row + 1, col)) q.push([row + 1, col, updatedPath]);
-    if (!seen(row - 1, col)) q.push([row - 1, col, updatedPath]);
-    if (!seen(row, col + 1)) q.push([row, col + 1, updatedPath]);
-    if (!seen(row, col - 1)) q.push([row, col - 1, updatedPath]);
+    if (!seen(row + 1, col, fakeSet)) q.push([row + 1, col, updatedPath]);
+    if (!seen(row - 1, col, fakeSet)) q.push([row - 1, col, updatedPath]);
+    if (!seen(row, col + 1, fakeSet)) q.push([row, col + 1, updatedPath]);
+    if (!seen(row, col - 1, fakeSet)) q.push([row, col - 1, updatedPath]);
   }
 };

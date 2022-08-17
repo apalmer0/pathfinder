@@ -6,8 +6,8 @@ import { MazeType, Position } from "../../types";
 import "./Maze.css";
 
 const DEFAULT_LOCATION: Position = [-1, -1];
-const MIN_SIZE = 20;
-const MAX_SIZE = 50;
+const MIN_SIZE = 21;
+const MAX_SIZE = 51;
 
 const Maze = () => {
   const [maze, setMaze] = useState<MazeType>([[]]);
@@ -32,7 +32,10 @@ const Maze = () => {
   }, [mazeSize, resetState]);
 
   const handleMazeSizeChange = (size: string) => {
-    setMazeSize(Number(size));
+    let newSize = Number(size);
+    newSize = newSize % 2 === 0 ? newSize + 1 : newSize;
+
+    setMazeSize(newSize);
   };
 
   const handleClick = (row: number, col: number) => {
@@ -51,7 +54,7 @@ const Maze = () => {
 
   const invalid = isInvalid(start) || isInvalid(end);
 
-  const solve = async () => {
+  const solve = () => {
     if (invalid) return;
 
     solveMaze(start, end, maze, setMaze);
