@@ -24,16 +24,19 @@ const Maze = () => {
     setMaze(newMaze);
   }, [generationAlgorithm, mazeSize]);
 
-  const resetState = useCallback(() => {
-    resetMaze(maze);
+  const restoreDefaults = () => {
     setStart(DEFAULT_LOCATION);
     setEnd(DEFAULT_LOCATION);
+  };
+
+  const resetState = useCallback(() => {
+    resetMaze(maze);
+    restoreDefaults();
   }, [maze]);
 
   const startOver = useCallback(() => {
     createMaze();
-    setStart(DEFAULT_LOCATION);
-    setEnd(DEFAULT_LOCATION);
+    restoreDefaults();
   }, [createMaze]);
 
   useEffect(() => {
