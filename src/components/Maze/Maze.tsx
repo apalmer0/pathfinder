@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import Cell from "../Cell";
 import { generateMaze, solveMaze } from "./utilities";
-import { MazeType, Position } from "../../types";
+import { GenerationAlgorithm, MazeType, Position } from "../../types";
 import "./Maze.css";
 
 const DEFAULT_LOCATION: Position = [-1, -1];
@@ -14,12 +14,15 @@ const Maze = () => {
   const [mazeSize, setMazeSize] = useState(MIN_SIZE);
   const [start, setStart] = useState<Position>(DEFAULT_LOCATION);
   const [end, setEnd] = useState<Position>(DEFAULT_LOCATION);
+  const [generationAlgorithm, setGenerationAlgorithm] = useState(
+    GenerationAlgorithm.BACKTRACKING
+  );
 
   const updateMaze = useCallback(() => {
-    const newMaze = generateMaze(mazeSize);
+    const newMaze = generateMaze(mazeSize, generationAlgorithm);
 
     setMaze(newMaze);
-  }, [mazeSize]);
+  }, [generationAlgorithm, mazeSize]);
 
   const resetState = useCallback(() => {
     updateMaze();
@@ -46,6 +49,13 @@ const Maze = () => {
     } else {
       setEnd([row, col]);
     }
+  };
+
+  const selectGenerationAlgorithm = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { value } = event.target;
+    setGenerationAlgorithm((value as unknown) as GenerationAlgorithm);
   };
 
   const isInvalid = (arr: Position): boolean => {
@@ -96,6 +106,18 @@ const Maze = () => {
           <button className="maze-button" onClick={resetState}>
             reset
           </button>
+        </div>
+        <div>
+          <div className="title">Maze generation Algorithm</div>
+          <select
+            name="generation-algorithm"
+            onChange={selectGenerationAlgorithm}
+            value={generationAlgorithm}
+          >
+            <option value={GenerationAlgorithm.BACKTRACKING}>
+              Backtracking
+            </option>
+          </select>
         </div>
         <div>
           <div className="title">Maze Size</div>
