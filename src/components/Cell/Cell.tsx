@@ -1,29 +1,25 @@
 import React from "react";
+import classNames from "classnames";
 
+import { CellTypes } from "../../types";
 import "./Cell.css";
 
 interface Props {
+  cellType: CellTypes;
   handleClick: () => void;
   isEnd: boolean;
   isStart: boolean;
-  partOfSolution: boolean;
-  visited: boolean;
-  wall: boolean;
 }
 
-const Cell: React.FC<Props> = ({
-  handleClick,
-  isEnd,
-  isStart,
-  partOfSolution,
-  visited,
-  wall,
-}) => {
-  const className = `cell ${visited ? "visited" : ""} ${
-    isStart ? "start" : ""
-  } ${wall ? "wall" : ""} ${isEnd ? "end" : ""} ${
-    partOfSolution ? "solution" : ""
-  }`;
+const Cell: React.FC<Props> = ({ handleClick, cellType, isEnd, isStart }) => {
+  const className = classNames("cell", {
+    end: isEnd,
+    solution: cellType === CellTypes.SOLUTION,
+    start: isStart,
+    visited: cellType === CellTypes.VISITED,
+    wall: cellType === CellTypes.WALL,
+  });
+
   return <div className={className} onClick={handleClick} />;
 };
 
