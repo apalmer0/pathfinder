@@ -15,3 +15,7 @@ export enum GenerationAlgorithm {
   BACKTRACKING,
   ALDOUS_BRODER,
 }
+
+export enum SolutionAlgorithm {
+  BFS,
+}

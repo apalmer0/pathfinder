@@ -4,6 +4,7 @@ import {
   MazeType,
   Path,
   Position,
+  SolutionAlgorithm,
 } from "../../../types";
 import SeenSet from "../../../SeenSet";
 
@@ -163,34 +164,7 @@ const aldousBroder = (mazeSize: number): MazeType => {
   return maze;
 };
 
-export const resetMaze = (maze: MazeType): MazeType => {
-  for (let i = 0; i < maze.length; i++) {
-    for (let j = 0; j < maze[0].length; j++) {
-      const touched = [CellTypes.VISITED, CellTypes.SOLUTION];
-      if (touched.includes(maze[i][j])) {
-        maze[i][j] = CellTypes.SPACE;
-      }
-    }
-  }
-
-  return maze;
-};
-
-export const generateMaze = (
-  mazeSize: number,
-  algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
-): MazeType => {
-  switch (algorithm) {
-    case GenerationAlgorithm.BACKTRACKING:
-      return backtrack(mazeSize);
-    case GenerationAlgorithm.ALDOUS_BRODER:
-      return aldousBroder(mazeSize);
-    default:
-      return backtrack(mazeSize);
-  }
-};
-
-export const solveMaze = async (
+const bfs = async (
   start: Position,
   end: Position,
   maze: MazeType,
@@ -234,5 +208,47 @@ export const solveMaze = async (
     if (!seenSet.has(row - 1, col)) q.push([row - 1, col, updatedPath]);
     if (!seenSet.has(row, col + 1)) q.push([row, col + 1, updatedPath]);
     if (!seenSet.has(row, col - 1)) q.push([row, col - 1, updatedPath]);
+  }
+};
+
+export const resetMaze = (maze: MazeType): MazeType => {
+  for (let i = 0; i < maze.length; i++) {
+    for (let j = 0; j < maze[0].length; j++) {
+      const touched = [CellTypes.VISITED, CellTypes.SOLUTION];
+      if (touched.includes(maze[i][j])) {
+        maze[i][j] = CellTypes.SPACE;
+      }
+    }
+  }
+
+  return maze;
+};
+
+export const generateMaze = (
+  mazeSize: number,
+  algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
+): MazeType => {
+  switch (algorithm) {
+    case GenerationAlgorithm.BACKTRACKING:
+      return backtrack(mazeSize);
+    case GenerationAlgorithm.ALDOUS_BRODER:
+      return aldousBroder(mazeSize);
+    default:
+      return backtrack(mazeSize);
+  }
+};
+
+export const solveMaze = async (
+  start: Position,
+  end: Position,
+  maze: MazeType,
+  setMaze: (maze: MazeType) => void,
+  solutionAlgorithm: SolutionAlgorithm
+) => {
+  switch (solutionAlgorithm) {
+    case SolutionAlgorithm.BFS:
+      return bfs(start, end, maze, setMaze);
+    default:
+      return bfs(start, end, maze, setMaze);
   }
 };

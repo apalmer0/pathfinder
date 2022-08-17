@@ -3,7 +3,12 @@ import classNames from "classnames";
 
 import Cell from "../Cell";
 import { generateMaze, resetMaze, solveMaze } from "./utilities";
-import { GenerationAlgorithm, MazeType, Position } from "../../types";
+import {
+  GenerationAlgorithm,
+  MazeType,
+  Position,
+  SolutionAlgorithm,
+} from "../../types";
 import "./Maze.css";
 
 const DEFAULT_LOCATION: Position = [-1, -1];
@@ -17,6 +22,9 @@ const Maze = () => {
   const [end, setEnd] = useState<Position>(DEFAULT_LOCATION);
   const [generationAlgorithm, setGenerationAlgorithm] = useState(
     GenerationAlgorithm.BACKTRACKING
+  );
+  const [solutionAlgorithm, setSolutionAlgorithm] = useState(
+    SolutionAlgorithm.BFS
   );
 
   const createMaze = useCallback(() => {
@@ -68,6 +76,13 @@ const Maze = () => {
     setGenerationAlgorithm((value as unknown) as GenerationAlgorithm);
   };
 
+  const selectSolutionAlgorithm = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { value } = event.target;
+    setSolutionAlgorithm((value as unknown) as SolutionAlgorithm);
+  };
+
   const isInvalid = (arr: Position): boolean => {
     return arr.some((ele) => ele === -1);
   };
@@ -77,7 +92,7 @@ const Maze = () => {
   const solve = () => {
     if (invalid) return;
 
-    solveMaze(start, end, maze, setMaze);
+    solveMaze(start, end, maze, setMaze, solutionAlgorithm);
   };
 
   const mazeDimensions = window.innerHeight * 0.75;
@@ -133,6 +148,16 @@ const Maze = () => {
             <option value={GenerationAlgorithm.ALDOUS_BRODER}>
               Aldous Broder
             </option>
+          </select>
+        </div>
+        <div>
+          <div className="title">Solution Algorithm</div>
+          <select
+            name="solution-algorithm"
+            onChange={selectSolutionAlgorithm}
+            value={solutionAlgorithm}
+          >
+            <option value={SolutionAlgorithm.BFS}>BFS</option>
           </select>
         </div>
         <div>
