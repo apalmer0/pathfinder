@@ -1,31 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Cell from "../Cell";
 import "./Maze.css";
 
-const MAZE: number[][] = [
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1],
-  [1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1],
-  [1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
-  [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1],
-  [1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1],
-  [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-];
 const DEFAULT_LOCATION: [number, number] = [-1, -1];
 
-const copyMaze = () => MAZE.map((row) => row.map((col) => col));
-
 const Maze = () => {
-  const [maze, setMaze] = useState(copyMaze());
+  const [maze, setMaze] = useState<number[][]>([[]]);
+  const [mazeSize, setMazeSize] = useState(10);
   const [start, setStart] = useState<[number, number]>(DEFAULT_LOCATION);
   const [end, setEnd] = useState<[number, number]>(DEFAULT_LOCATION);
 
-  const clearState = () => {
-    setMaze(copyMaze());
+  const generateMaze = () => {
+    const newMaze: number[][] = [];
+    for (let i = 0; i < mazeSize; i++) {
+      const newRow = [];
+
+      for (let j = 0; j < mazeSize; j++) {
+        newRow.push(Math.round(Math.random()));
+      }
+
+      newMaze.push(newRow);
+    }
+
+    setMaze(newMaze);
+  };
+
+  useEffect(() => {
+    generateMaze();
+  }, [mazeSize]);
+
+  const handleMazeSizeChange = (size: string) => {
+    setMazeSize(Number(size));
+  };
+
+  const resetState = () => {
+    generateMaze();
     setStart(DEFAULT_LOCATION);
     setEnd(DEFAULT_LOCATION);
   };
@@ -77,8 +87,8 @@ const Maze = () => {
       if (seen(row, col)) continue;
       add(row, col);
 
-      if (row < 0 || row === MAZE.length) continue;
-      if (col < 0 || col === MAZE[0].length) continue;
+      if (row < 0 || row === maze.length) continue;
+      if (col < 0 || col === maze[0].length) continue;
       if (maze[row][col] === 1) continue;
 
       const newMaze = [...maze];
@@ -107,6 +117,13 @@ const Maze = () => {
 
   return (
     <div>
+      <input
+        max="40"
+        min="2"
+        onChange={(e) => handleMazeSizeChange(e.target.value)}
+        type="range"
+        value={mazeSize}
+      />
       <div className="maze-container">
         {maze.map((row, rowIndex) => (
           <div className="row" key={rowIndex}>
@@ -130,8 +147,8 @@ const Maze = () => {
         >
           solve
         </button>
-        <button className="maze-button" onClick={clearState}>
-          clear
+        <button className="maze-button" onClick={resetState}>
+          reset
         </button>
       </div>
     </div>
