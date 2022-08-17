@@ -117,6 +117,9 @@ const Maze = () => {
             <option value={GenerationAlgorithm.BACKTRACKING}>
               Backtracking
             </option>
+            <option value={GenerationAlgorithm.ALDOUS_BRODER}>
+              Aldous Broder
+            </option>
           </select>
         </div>
         <div>

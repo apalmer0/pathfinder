@@ -13,4 +13,5 @@ export enum CellTypes {
 
 export enum GenerationAlgorithm {
   BACKTRACKING,
+  ALDOUS_BRODER,
 }

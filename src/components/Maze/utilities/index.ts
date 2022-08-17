@@ -48,22 +48,27 @@ const createBaseMaze = (mazeSize: number, fill: CellTypes): MazeType => {
   return maze;
 };
 
-const findNeighbors = (row: number, col: number, maze: MazeType): Path => {
+const findNeighbors = (
+  row: number,
+  col: number,
+  maze: MazeType,
+  cellTypes: CellTypes[] = [CellTypes.WALL]
+): Path => {
   const neighbors: Path = [];
 
-  if (row > 1 && maze[row - 2][col] === CellTypes.WALL) {
+  if (row > 1 && cellTypes.includes(maze[row - 2][col])) {
     neighbors.push([row - 2, col]);
   }
 
-  if (row < maze.length - 2 && maze[row + 2][col] === CellTypes.WALL) {
+  if (row < maze.length - 2 && cellTypes.includes(maze[row + 2][col])) {
     neighbors.push([row + 2, col]);
   }
 
-  if (col > 1 && maze[row][col - 2] === CellTypes.WALL) {
+  if (col > 1 && cellTypes.includes(maze[row][col - 2])) {
     neighbors.push([row, col - 2]);
   }
 
-  if (col < maze[0].length - 2 && maze[row][col + 2] === CellTypes.WALL) {
+  if (col < maze[0].length - 2 && cellTypes.includes(maze[row][col + 2])) {
     neighbors.push([row, col + 2]);
   }
 
@@ -102,6 +107,60 @@ const backtrack = (mazeSize: number): MazeType => {
   return maze;
 };
 
+const aldousBroder = (mazeSize: number): MazeType => {
+  const maze = createBaseMaze(mazeSize, CellTypes.WALL);
+
+  let currRow = randBetween(1, mazeSize - 1);
+  let currCol = randBetween(1, mazeSize - 1);
+
+  maze[currRow][currCol] = CellTypes.SPACE;
+
+  let numVisited = 1;
+
+  while (numVisited < mazeSize * mazeSize) {
+    const neighbors = findNeighbors(currRow, currCol, maze);
+
+    if (neighbors.length === 0) {
+      const allNeighbors = findNeighbors(currRow, currCol, maze, [
+        CellTypes.SPACE,
+        CellTypes.WALL,
+      ]);
+      const randomIndex = Math.floor(Math.random() * allNeighbors.length);
+      const randomNeighbor = allNeighbors[randomIndex];
+
+      currRow = randomNeighbor[0];
+      currCol = randomNeighbor[1];
+
+      continue;
+    }
+
+    for (neighbor in neighbors) {
+      const [neighborRow, neighborCol] = neighbor;
+
+      if (maze[neighborRow][neighborCol] > 0) {
+        // open up wall to new neighbor
+        const newRow = Math.floor((neighborRow + currRow) / 2);
+        const newCol = Math.floor((neighborCol + currCol) / 2);
+
+        maze[newRow][newCol] = CellTypes.SPACE;
+
+        // mark neighbor as visited
+        maze[neighborRow][neighborCol] = 0;
+
+        // bump the number visited
+        num_visited += 1;
+
+        // current becomes new neighbor
+        currRow = neighborRow;
+        currCol = neighborCol;
+
+        break;
+      }
+    }
+  }
+  return maze;
+};
+
 export const generateMaze = (
   mazeSize: number,
   algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
@@ -109,6 +168,8 @@ export const generateMaze = (
   switch (algorithm) {
     case GenerationAlgorithm.BACKTRACKING:
       return backtrack(mazeSize);
+    case GenerationAlgorithm.ALDOUS_BRODER:
+      return aldousBroder(mazeSize);
     default:
       return backtrack(mazeSize);
   }
