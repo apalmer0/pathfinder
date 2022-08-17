@@ -1,6 +1,27 @@
-.maze-container {
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.maze {
   border: 1px solid white;
   padding: 15px;
+  width: fit-content;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.controls .title {
+  color: white;
 }
 
 .row {

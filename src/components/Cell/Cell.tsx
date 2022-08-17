@@ -9,9 +9,16 @@ interface Props {
   handleClick: () => void;
   isEnd: boolean;
   isStart: boolean;
+  size: number;
 }
 
-const Cell: React.FC<Props> = ({ handleClick, cellType, isEnd, isStart }) => {
+const Cell: React.FC<Props> = ({
+  cellType,
+  handleClick,
+  isEnd,
+  isStart,
+  size,
+}) => {
   const className = classNames("cell", {
     end: isEnd,
     solution: cellType === CellTypes.SOLUTION,
@@ -20,7 +27,13 @@ const Cell: React.FC<Props> = ({ handleClick, cellType, isEnd, isStart }) => {
     wall: cellType === CellTypes.WALL,
   });
 
-  return <div className={className} onClick={handleClick} />;
+  return (
+    <div
+      className={className}
+      style={{ height: size, width: size }}
+      onClick={handleClick}
+    />
+  );
 };
 
 export default Cell;

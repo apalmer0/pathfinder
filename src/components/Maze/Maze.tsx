@@ -4,10 +4,12 @@ import Cell from "../Cell";
 import "./Maze.css";
 
 const DEFAULT_LOCATION: [number, number] = [-1, -1];
+const MIN_SIZE = 20;
+const MAX_SIZE = 50;
 
 const Maze = () => {
   const [maze, setMaze] = useState<number[][]>([[]]);
-  const [mazeSize, setMazeSize] = useState(10);
+  const [mazeSize, setMazeSize] = useState(MIN_SIZE);
   const [start, setStart] = useState<[number, number]>(DEFAULT_LOCATION);
   const [end, setEnd] = useState<[number, number]>(DEFAULT_LOCATION);
 
@@ -27,7 +29,7 @@ const Maze = () => {
   };
 
   useEffect(() => {
-    generateMaze();
+    resetState();
   }, [mazeSize]);
 
   const handleMazeSizeChange = (size: string) => {
@@ -115,41 +117,53 @@ const Maze = () => {
     }
   };
 
+  const mazeDimensions = window.innerHeight * 0.75;
+  const cellSize = mazeDimensions / mazeSize;
+
   return (
-    <div>
-      <input
-        max="40"
-        min="2"
-        onChange={(e) => handleMazeSizeChange(e.target.value)}
-        type="range"
-        value={mazeSize}
-      />
-      <div className="maze-container">
+    <div className="container">
+      <div
+        className="maze"
+        style={{ height: mazeDimensions, width: mazeDimensions }}
+      >
         {maze.map((row, rowIndex) => (
           <div className="row" key={rowIndex}>
             {row.map((_, colIndex) => (
               <Cell
-                isStart={rowIndex === start[0] && colIndex === start[1]}
-                isEnd={rowIndex === end[0] && colIndex === end[1]}
                 cellType={maze[rowIndex][colIndex]}
-                key={colIndex}
                 handleClick={() => handleClick(rowIndex, colIndex)}
+                isEnd={rowIndex === end[0] && colIndex === end[1]}
+                isStart={rowIndex === start[0] && colIndex === start[1]}
+                key={colIndex}
+                size={cellSize}
               />
             ))}
           </div>
         ))}
       </div>
-      <div className="buttons">
-        <button
-          disabled={invalid}
-          onClick={solveMaze}
-          className={`maze-button ${invalid ? "disabled" : ""}`}
-        >
-          solve
-        </button>
-        <button className="maze-button" onClick={resetState}>
-          reset
-        </button>
+      <div className="controls">
+        <div className="buttons">
+          <button
+            disabled={invalid}
+            onClick={solveMaze}
+            className={`maze-button ${invalid ? "disabled" : ""}`}
+          >
+            solve
+          </button>
+          <button className="maze-button" onClick={resetState}>
+            reset
+          </button>
+        </div>
+        <div>
+          <div className="title">Maze Size</div>
+          <input
+            max={MAX_SIZE}
+            min={MIN_SIZE}
+            onChange={(e) => handleMazeSizeChange(e.target.value)}
+            type="range"
+            value={mazeSize}
+          />
+        </div>
       </div>
     </div>
   );
