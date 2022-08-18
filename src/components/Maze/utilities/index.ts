@@ -228,7 +228,7 @@ export const generateMaze = (
   mazeSize: number,
   algorithm: GenerationAlgorithm = GenerationAlgorithm.BACKTRACKING
 ): MazeType => {
-  switch (algorithm) {
+  switch (+algorithm) {
     case GenerationAlgorithm.BACKTRACKING:
       return backtrack(mazeSize);
     case GenerationAlgorithm.ALDOUS_BRODER:
@@ -245,7 +245,7 @@ export const solveMaze = async (
   setMaze: (maze: MazeType) => void,
   solutionAlgorithm: SolutionAlgorithm
 ) => {
-  switch (solutionAlgorithm) {
+  switch (+solutionAlgorithm) {
     case SolutionAlgorithm.BFS:
       return bfs(start, end, maze, setMaze);
     default:
