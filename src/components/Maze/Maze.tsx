@@ -43,14 +43,14 @@ const Maze = () => {
     restoreDefaults();
   }, [maze]);
 
-  const startOver = useCallback(() => {
+  const newMaze = useCallback(() => {
     createMaze();
     restoreDefaults();
   }, [createMaze]);
 
   useEffect(() => {
-    startOver();
-  }, [mazeSize, startOver]);
+    newMaze();
+  }, [mazeSize, newMaze]);
 
   const handleMazeSizeChange = (size: string) => {
     let newSize = Number(size);
@@ -131,8 +131,8 @@ const Maze = () => {
           <button className="maze-button" onClick={resetState}>
             reset
           </button>
-          <button className="maze-button" onClick={startOver}>
-            start over
+          <button className="maze-button" onClick={newMaze}>
+            new maze
           </button>
         </div>
         <div>
