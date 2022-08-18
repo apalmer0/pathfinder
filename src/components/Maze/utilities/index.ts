@@ -168,9 +168,10 @@ const bfs = async (
   start: Position,
   end: Position,
   maze: MazeType,
-  setMaze: (maze: MazeType) => void
+  setMaze: (maze: MazeType) => void,
+  seenSet: SeenSet = new SeenSet(),
+  seenSet2: SeenSet = new SeenSet()
 ) => {
-  const seenSet = new SeenSet();
   const q: [number, number, Path][] = [[...start, []]];
 
   while (q.length > 0) {
@@ -185,14 +186,14 @@ const bfs = async (
     if (maze[row][col] === 1) continue;
 
     const newMaze = [...maze];
-    newMaze[row][col] = 2;
+    newMaze[row][col] = CellTypes.VISITED;
     setMaze(newMaze);
 
     await new Promise((r) => setTimeout(r, ANIMATION_DELAY));
 
     const updatedPath: Path = [...path, [row, col]];
 
-    if (row === end[0] && col === end[1]) {
+    if (seenSet2.has(row, col) || (row === end[0] && col === end[1])) {
       for (let i = 0; i < updatedPath.length; i++) {
         const [row, col] = updatedPath[i];
         const newMaze = [...maze];
@@ -209,6 +210,21 @@ const bfs = async (
     if (!seenSet.has(row, col + 1)) q.push([row, col + 1, updatedPath]);
     if (!seenSet.has(row, col - 1)) q.push([row, col - 1, updatedPath]);
   }
+
+  return [];
+};
+
+const biDirectionalBfs = async (
+  start: Position,
+  end: Position,
+  maze: MazeType,
+  setMaze: (maze: MazeType) => void
+) => {
+  const seenForward = new SeenSet();
+  const seenReverse = new SeenSet();
+
+  bfs(start, end, maze, setMaze, seenForward, seenReverse);
+  bfs(end, start, maze, setMaze, seenReverse, seenForward);
 };
 
 export const resetMaze = (maze: MazeType): MazeType => {
@@ -248,6 +264,8 @@ export const solveMaze = async (
   switch (+solutionAlgorithm) {
     case SolutionAlgorithm.BFS:
       return bfs(start, end, maze, setMaze);
+    case SolutionAlgorithm.BIDIRECTIONAL_BFS:
+      return biDirectionalBfs(start, end, maze, setMaze);
     default:
       return bfs(start, end, maze, setMaze);
   }

@@ -158,6 +158,9 @@ const Maze = () => {
             value={solutionAlgorithm}
           >
             <option value={SolutionAlgorithm.BFS}>BFS</option>
+            <option value={SolutionAlgorithm.BIDIRECTIONAL_BFS}>
+              Bi-Directional BFS
+            </option>
           </select>
         </div>
         <div>

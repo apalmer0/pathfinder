@@ -18,4 +18,5 @@ export enum GenerationAlgorithm {
 
 export enum SolutionAlgorithm {
   BFS,
+  BIDIRECTIONAL_BFS,
 }
