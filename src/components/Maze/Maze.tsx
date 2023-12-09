@@ -22,6 +22,9 @@ export const Maze = () => {
   const [start, setStart] = useState<Position>(DEFAULT_LOCATION)
   const [end, setEnd] = useState<Position>(DEFAULT_LOCATION)
   const [speed, setSpeed] = useState(ANIMATION_DELAY)
+  const [solving, setSolving] = useState(false)
+  const [solved, setSolved] = useState(false)
+  const [solveTime, setSolveTime] = useState(0)
   const [generationAlgorithm, setGenerationAlgorithm] = useState(
     GenerationAlgorithm.BACKTRACKING
   )
@@ -36,6 +39,9 @@ export const Maze = () => {
   }, [generationAlgorithm, mazeSize])
 
   const restoreDefaults = () => {
+    setSolved(false)
+    setSolving(false)
+    setSolveTime(0)
     setStart(DEFAULT_LOCATION)
     setEnd(DEFAULT_LOCATION)
   }
@@ -94,14 +100,38 @@ export const Maze = () => {
     return arr.some((ele) => ele === -1)
   }
 
-  const invalid = isInvalid(start) || isInvalid(end)
+  const invalid = isInvalid(start) || isInvalid(end) || solved || solving
 
   const solve = () => {
     if (invalid) return
+    setSolving(true)
+    const timestart = new Date().getTime()
 
     const solveSpeed = ANIMATION_DELAY - speed
 
-    solveMaze(start, end, maze, setMaze, solutionAlgorithm, solveSpeed)
+    solveMaze(start, end, maze, setMaze, solutionAlgorithm, solveSpeed).then(
+      () => {
+        setSolving(false)
+        setSolved(true)
+        // this is technically wrong - it's including the time taken to trace the solution
+        const timeend = new Date().getTime()
+        setSolveTime(timeend - timestart)
+      }
+    )
+  }
+
+  const getInstructions = () => {
+    if (start === DEFAULT_LOCATION) {
+      return 'Select a starting point in the maze'
+    } else if (end === DEFAULT_LOCATION) {
+      return 'Select a end point'
+    } else if (solving) {
+      return 'Finding the shortest path...'
+    } else if (solved) {
+      return `Solved in ${solveTime}ms!`
+    } else {
+      return 'Click solve to find the shortest path'
+    }
   }
 
   const mazeDimensions = window.innerHeight * 0.75
@@ -128,12 +158,22 @@ export const Maze = () => {
           </div>
         ))}
       </div>
+      <div
+        className={classNames('instructions', {
+          'instructions--solving': solving,
+          'instructions--solved': solved,
+        })}
+      >
+        {getInstructions()}
+      </div>
       <div className="controls">
         <div className="buttons">
           <button
             disabled={invalid}
             onClick={solve}
-            className={classNames('maze-button', { disabled: invalid })}
+            className={classNames('maze-button', {
+              disabled: invalid,
+            })}
           >
             solve
           </button>

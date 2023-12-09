@@ -223,8 +223,12 @@ const biDirectionalBfs = async (
   const seenForward = new SeenSet()
   const seenReverse = new SeenSet()
 
-  bfs(start, end, maze, setMaze, speed, seenForward, seenReverse)
-  bfs(end, start, maze, setMaze, speed, seenReverse, seenForward)
+  const promises = [
+    bfs(start, end, maze, setMaze, speed, seenForward, seenReverse),
+    bfs(end, start, maze, setMaze, speed, seenReverse, seenForward),
+  ]
+
+  await Promise.all(promises)
 }
 
 export const resetMaze = (maze: MazeType): MazeType => {

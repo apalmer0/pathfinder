@@ -14,9 +14,11 @@
 }
 
 .controls {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  margin-bottom: 10px;
   width: 100%;
 }
 
@@ -44,4 +46,20 @@
 
 .disabled {
   cursor: not-allowed;
+}
+
+.instructions {
+  background-color: lightblue;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.instructions--solving {
+  background-color: lightsalmon;
+}
+
+.instructions--solved {
+  background-color: lightgreen;
 }
