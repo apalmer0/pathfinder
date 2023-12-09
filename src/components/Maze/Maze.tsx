@@ -1,102 +1,102 @@
-import React, { useCallback, useEffect, useState } from "react";
-import classNames from "classnames";
+import React, { useCallback, useEffect, useState } from 'react'
+import classNames from 'classnames'
 
-import Cell from "../Cell";
-import { generateMaze, resetMaze, solveMaze } from "./utilities";
+import { Cell } from '../Cell'
+import { generateMaze, resetMaze, solveMaze } from './utilities'
 import {
   GenerationAlgorithm,
   MazeType,
   Position,
   SolutionAlgorithm,
-} from "../../types";
-import "./Maze.css";
+} from '../../types'
+import './Maze.css'
 
-const DEFAULT_LOCATION: Position = [-1, -1];
-const MIN_SIZE = 21;
-const MAX_SIZE = 51;
+const DEFAULT_LOCATION: Position = [-1, -1]
+const MIN_SIZE = 21
+const MAX_SIZE = 51
 
-const Maze = () => {
-  const [maze, setMaze] = useState<MazeType>([[]]);
-  const [mazeSize, setMazeSize] = useState(MIN_SIZE);
-  const [start, setStart] = useState<Position>(DEFAULT_LOCATION);
-  const [end, setEnd] = useState<Position>(DEFAULT_LOCATION);
+export const Maze = () => {
+  const [maze, setMaze] = useState<MazeType>([[]])
+  const [mazeSize, setMazeSize] = useState(MIN_SIZE)
+  const [start, setStart] = useState<Position>(DEFAULT_LOCATION)
+  const [end, setEnd] = useState<Position>(DEFAULT_LOCATION)
   const [generationAlgorithm, setGenerationAlgorithm] = useState(
     GenerationAlgorithm.BACKTRACKING
-  );
+  )
   const [solutionAlgorithm, setSolutionAlgorithm] = useState(
     SolutionAlgorithm.BFS
-  );
+  )
 
   const createMaze = useCallback(() => {
-    const newMaze = generateMaze(mazeSize, generationAlgorithm);
+    const newMaze = generateMaze(mazeSize, generationAlgorithm)
 
-    setMaze(newMaze);
-  }, [generationAlgorithm, mazeSize]);
+    setMaze(newMaze)
+  }, [generationAlgorithm, mazeSize])
 
   const restoreDefaults = () => {
-    setStart(DEFAULT_LOCATION);
-    setEnd(DEFAULT_LOCATION);
-  };
+    setStart(DEFAULT_LOCATION)
+    setEnd(DEFAULT_LOCATION)
+  }
 
   const resetState = useCallback(() => {
-    resetMaze(maze);
-    restoreDefaults();
-  }, [maze]);
+    resetMaze(maze)
+    restoreDefaults()
+  }, [maze])
 
   const newMaze = useCallback(() => {
-    createMaze();
-    restoreDefaults();
-  }, [createMaze]);
+    createMaze()
+    restoreDefaults()
+  }, [createMaze])
 
   useEffect(() => {
-    newMaze();
-  }, [mazeSize, newMaze]);
+    newMaze()
+  }, [mazeSize, newMaze])
 
   const handleMazeSizeChange = (size: string) => {
-    let newSize = Number(size);
-    newSize = newSize % 2 === 0 ? newSize + 1 : newSize;
+    let newSize = Number(size)
+    newSize = newSize % 2 === 0 ? newSize + 1 : newSize
 
-    setMazeSize(newSize);
-  };
+    setMazeSize(newSize)
+  }
 
   const handleClick = (row: number, col: number) => {
-    if (maze[row][col] !== 0) return;
+    if (maze[row][col] !== 0) return
 
     if (start === DEFAULT_LOCATION) {
-      setStart([row, col]);
+      setStart([row, col])
     } else {
-      setEnd([row, col]);
+      setEnd([row, col])
     }
-  };
+  }
 
   const selectGenerationAlgorithm = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const { value } = event.target;
-    setGenerationAlgorithm((value as unknown) as GenerationAlgorithm);
-  };
+    const { value } = event.target
+    setGenerationAlgorithm(value as unknown as GenerationAlgorithm)
+  }
 
   const selectSolutionAlgorithm = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const { value } = event.target;
-    setSolutionAlgorithm((value as unknown) as SolutionAlgorithm);
-  };
+    const { value } = event.target
+    setSolutionAlgorithm(value as unknown as SolutionAlgorithm)
+  }
 
   const isInvalid = (arr: Position): boolean => {
-    return arr.some((ele) => ele === -1);
-  };
+    return arr.some((ele) => ele === -1)
+  }
 
-  const invalid = isInvalid(start) || isInvalid(end);
+  const invalid = isInvalid(start) || isInvalid(end)
 
   const solve = () => {
-    if (invalid) return;
+    if (invalid) return
 
-    solveMaze(start, end, maze, setMaze, solutionAlgorithm);
-  };
+    solveMaze(start, end, maze, setMaze, solutionAlgorithm)
+  }
 
-  const mazeDimensions = window.innerHeight * 0.75;
-  const cellSize = mazeDimensions / mazeSize;
+  const mazeDimensions = window.innerHeight * 0.75
+  const cellSize = mazeDimensions / mazeSize
 
   return (
     <div className="container">
@@ -124,7 +124,7 @@ const Maze = () => {
           <button
             disabled={invalid}
             onClick={solve}
-            className={classNames("maze-button", { disabled: invalid })}
+            className={classNames('maze-button', { disabled: invalid })}
           >
             solve
           </button>
@@ -175,7 +175,5 @@ const Maze = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-export default Maze;
+  )
+}

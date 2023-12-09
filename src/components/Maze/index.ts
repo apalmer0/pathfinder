@@ -1,2 +1,1 @@
-import Maze from "./Maze";
-export default Maze;
+export { Maze } from './Maze'

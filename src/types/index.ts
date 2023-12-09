@@ -1,8 +1,8 @@
-export type Position = [number, number];
+export type Position = [number, number]
 
-export type MazeType = number[][];
+export type MazeType = number[][]
 
-export type Path = Position[];
+export type Path = Position[]
 
 export enum CellTypes {
   SPACE = 0,

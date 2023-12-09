@@ -1,31 +1,31 @@
-import React from "react";
-import classNames from "classnames";
+import React from 'react'
+import classNames from 'classnames'
 
-import { CellTypes } from "../../types";
-import "./Cell.css";
+import { CellTypes } from '../../types'
+import './Cell.css'
 
 interface Props {
-  cellType: CellTypes;
-  handleClick: () => void;
-  isEnd: boolean;
-  isStart: boolean;
-  size: number;
+  cellType: CellTypes
+  handleClick: () => void
+  isEnd: boolean
+  isStart: boolean
+  size: number
 }
 
-const Cell: React.FC<Props> = ({
+export const Cell: React.FC<Props> = ({
   cellType,
   handleClick,
   isEnd,
   isStart,
   size,
 }) => {
-  const className = classNames("cell", {
+  const className = classNames('cell', {
     end: isEnd,
     solution: cellType === CellTypes.SOLUTION,
     start: isStart,
     visited: cellType === CellTypes.VISITED,
     wall: cellType === CellTypes.WALL,
-  });
+  })
 
   return (
     <div
@@ -33,7 +33,5 @@ const Cell: React.FC<Props> = ({
       style={{ height: size, width: size }}
       onClick={handleClick}
     />
-  );
-};
-
-export default Cell;
+  )
+}
