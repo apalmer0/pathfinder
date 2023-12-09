@@ -8,8 +8,6 @@ import {
 } from '../../../types'
 import SeenSet from '../../../SeenSet'
 
-const ANIMATION_DELAY = 25
-
 const randBetween = (low: number, high: number): number => {
   const half = Math.floor(high / 2) - 2
   const random = Math.floor(Math.random() * (half - low + 1) + low)
@@ -169,6 +167,7 @@ const bfs = async (
   end: Position,
   maze: MazeType,
   setMaze: (maze: MazeType) => void,
+  speed: number,
   seenSet: SeenSet = new SeenSet(),
   seenSet2: SeenSet = new SeenSet()
 ) => {
@@ -189,7 +188,7 @@ const bfs = async (
     newMaze[row][col] = CellTypes.VISITED
     setMaze(newMaze)
 
-    await new Promise((r) => setTimeout(r, ANIMATION_DELAY))
+    await new Promise((r) => setTimeout(r, speed))
 
     const updatedPath: Path = [...path, [row, col]]
 
@@ -199,7 +198,7 @@ const bfs = async (
         const newMaze = [...maze]
         newMaze[row][col] = CellTypes.SOLUTION
         setMaze(newMaze)
-        await new Promise((r) => setTimeout(r, ANIMATION_DELAY))
+        await new Promise((r) => setTimeout(r, speed))
       }
 
       break
@@ -218,13 +217,14 @@ const biDirectionalBfs = async (
   start: Position,
   end: Position,
   maze: MazeType,
-  setMaze: (maze: MazeType) => void
+  setMaze: (maze: MazeType) => void,
+  speed: number
 ) => {
   const seenForward = new SeenSet()
   const seenReverse = new SeenSet()
 
-  bfs(start, end, maze, setMaze, seenForward, seenReverse)
-  bfs(end, start, maze, setMaze, seenReverse, seenForward)
+  bfs(start, end, maze, setMaze, speed, seenForward, seenReverse)
+  bfs(end, start, maze, setMaze, speed, seenReverse, seenForward)
 }
 
 export const resetMaze = (maze: MazeType): MazeType => {
@@ -259,14 +259,15 @@ export const solveMaze = async (
   end: Position,
   maze: MazeType,
   setMaze: (maze: MazeType) => void,
-  solutionAlgorithm: SolutionAlgorithm
+  solutionAlgorithm: SolutionAlgorithm,
+  speed: number
 ) => {
   switch (+solutionAlgorithm) {
     case SolutionAlgorithm.BFS:
-      return bfs(start, end, maze, setMaze)
+      return bfs(start, end, maze, setMaze, speed)
     case SolutionAlgorithm.BIDIRECTIONAL_BFS:
-      return biDirectionalBfs(start, end, maze, setMaze)
+      return biDirectionalBfs(start, end, maze, setMaze, speed)
     default:
-      return bfs(start, end, maze, setMaze)
+      return bfs(start, end, maze, setMaze, speed)
   }
 }

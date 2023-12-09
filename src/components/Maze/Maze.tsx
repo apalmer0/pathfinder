@@ -11,6 +11,7 @@ import {
 } from '../../types'
 import './Maze.css'
 
+const ANIMATION_DELAY = 25
 const DEFAULT_LOCATION: Position = [-1, -1]
 const MIN_SIZE = 21
 const MAX_SIZE = 51
@@ -20,6 +21,7 @@ export const Maze = () => {
   const [mazeSize, setMazeSize] = useState(MIN_SIZE)
   const [start, setStart] = useState<Position>(DEFAULT_LOCATION)
   const [end, setEnd] = useState<Position>(DEFAULT_LOCATION)
+  const [speed, setSpeed] = useState(ANIMATION_DELAY)
   const [generationAlgorithm, setGenerationAlgorithm] = useState(
     GenerationAlgorithm.BACKTRACKING
   )
@@ -59,6 +61,11 @@ export const Maze = () => {
     setMazeSize(newSize)
   }
 
+  const handleSolveSpeedChange = (speed: string) => {
+    const newSpeed = Number(speed)
+    setSpeed(newSpeed)
+  }
+
   const handleClick = (row: number, col: number) => {
     if (maze[row][col] !== 0) return
 
@@ -92,7 +99,9 @@ export const Maze = () => {
   const solve = () => {
     if (invalid) return
 
-    solveMaze(start, end, maze, setMaze, solutionAlgorithm)
+    const solveSpeed = ANIMATION_DELAY - speed
+
+    solveMaze(start, end, maze, setMaze, solutionAlgorithm, solveSpeed)
   }
 
   const mazeDimensions = window.innerHeight * 0.75
@@ -171,6 +180,16 @@ export const Maze = () => {
             onChange={(e) => handleMazeSizeChange(e.target.value)}
             type="range"
             value={mazeSize}
+          />
+        </div>
+        <div>
+          <div className="title">Animation Speed</div>
+          <input
+            max={ANIMATION_DELAY}
+            min={0}
+            onChange={(e) => handleSolveSpeedChange(e.target.value)}
+            type="range"
+            value={speed}
           />
         </div>
       </div>
