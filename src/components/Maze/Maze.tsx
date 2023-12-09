@@ -184,7 +184,8 @@ export const Maze = () => {
             new maze
           </button>
         </div>
-        <div>
+        {/* Aldous Broder isn't working at the moment, so let's not even give the option */}
+        {/* <div>
           <div className="title">Maze generation Algorithm</div>
           <select
             name="generation-algorithm"
@@ -198,7 +199,7 @@ export const Maze = () => {
               Aldous Broder
             </option>
           </select>
-        </div>
+        </div> */}
         <div>
           <div className="title">Solution Algorithm</div>
           <select

@@ -119,9 +119,11 @@ const aldousBroder = (mazeSize: number): MazeType => {
   let numVisited = 1
 
   while (numVisited < mazeSize * mazeSize) {
+    // one of these calls to findNeighbors is triggering an infinite loop
     const neighbors = findNeighbors(currRow, currCol, maze)
 
     if (neighbors.length === 0) {
+      // one of these calls to findNeighbors is triggering an infinite loop
       const allNeighbors = findNeighbors(currRow, currCol, maze, [
         CellTypes.SPACE,
         CellTypes.WALL,
@@ -252,7 +254,9 @@ export const generateMaze = (
     case GenerationAlgorithm.BACKTRACKING:
       return backtrack(mazeSize)
     case GenerationAlgorithm.ALDOUS_BRODER:
-      return aldousBroder(mazeSize)
+      return backtrack(mazeSize)
+    // aldousBroder is broken at the moment, need to fix
+    // return aldousBroder(mazeSize)
     default:
       return backtrack(mazeSize)
   }
