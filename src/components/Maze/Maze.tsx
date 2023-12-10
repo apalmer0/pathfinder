@@ -124,7 +124,7 @@ export const Maze = () => {
     if (start === DEFAULT_LOCATION) {
       return 'Select a starting point in the maze'
     } else if (end === DEFAULT_LOCATION) {
-      return 'Select a end point'
+      return 'Select an end point'
     } else if (solving) {
       return 'Finding the shortest path...'
     } else if (solved) {
